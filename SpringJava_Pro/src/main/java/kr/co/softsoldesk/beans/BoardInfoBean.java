@@ -5,6 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BoardinfoBean {
+public class BoardInfoBean {
 	
+	private int board_info_idx;
+	private String board_info_name;
 }
