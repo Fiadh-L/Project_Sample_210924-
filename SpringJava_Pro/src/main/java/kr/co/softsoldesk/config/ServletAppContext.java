@@ -42,7 +42,7 @@ public class ServletAppContext implements WebMvcConfigurer{
 	private String db_password;
 	
 	@Autowired
-	private TopMenuService TopMenuService;
+	private TopMenuService topMenuService;
 	
 	//controller의 메서드가 반환하는 결과값을 view로 보낼대 지정되어지는 경로 구현
 	@Override
@@ -61,60 +61,54 @@ public class ServletAppContext implements WebMvcConfigurer{
 		//어디에 있던지 리소스만 있으면 됩니다.
 	}
 	
-	@Bean
-	public BasicDataSource datasource() {
-		BasicDataSource source = new BasicDataSource();
-		source.setDriverClassName(db_classname);
-		source.setUrl(db_url);
-		source.setUsername(db_username);
-		source.setPassword(db_password);
+	// 데이터베이스 접속 정보를 관리하는 Bean
+		@Bean
+		public BasicDataSource dataSource() {
+			BasicDataSource source = new BasicDataSource();
+			source.setDriverClassName(db_classname);
+			source.setUrl(db_url);
+			source.setUsername(db_username);
+			source.setPassword(db_password);
+			
+			return source;
+		}
 		
-		return source;
-	}
-	// db연결
-	@Bean
-	public SqlSessionFactory factory(BasicDataSource source) throws Exception {
-		SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
-		factoryBean.setDataSource(source);
 		
-		SqlSessionFactory factory = factoryBean.getObject();
-		return factory;
-	}
+		// 쿼리문과 접속 정보를 관리하는 객체
+		@Bean
+		public SqlSessionFactory factory(BasicDataSource source) throws Exception{
+			SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+			factoryBean.setDataSource(source);
+			SqlSessionFactory factory = factoryBean.getObject();
+			return factory;
+		}
 	
-	// 실행문
-	@Bean
-	public MapperFactoryBean<BoardInfoMapper> getBoardMapper(SqlSessionFactory factory) throws Exception {
-		
-		//쿼리
-		MapperFactoryBean<BoardInfoMapper> factoryBean = new MapperFactoryBean<BoardInfoMapper>(BoardInfoMapper.class);
-		//sql문을 입력받음 
-		//오라클과 연동되어서 sql문을 해석하는 코드
-		factoryBean.setSqlSessionFactory(factory);
-		
-		return factoryBean;
-		
-	}
+		// 쿼리문 실행을 위한 객체(Mapper 관리)
+		@Bean
+		public MapperFactoryBean<BoardInfoMapper> getBoardInfoMapper(SqlSessionFactory factory) throws Exception{
+			MapperFactoryBean<BoardInfoMapper> factoryBean = new MapperFactoryBean<BoardInfoMapper>(BoardInfoMapper.class);
+			factoryBean.setSqlSessionFactory(factory);
+			return factoryBean;
+		}
 	
-	@Bean
-	public MapperFactoryBean<TopMenuMapper> getTopMenuMapper (SqlSessionFactory factory) throws Exception{
-		
-		MapperFactoryBean<TopMenuMapper> factoryBean = new MapperFactoryBean<TopMenuMapper>(TopMenuMapper.class);
-		factoryBean.setSqlSessionFactory(factory);
-		
-		return factoryBean;
-	}
+		@Bean
+		public MapperFactoryBean<TopMenuMapper> getTopMenuMapper(SqlSessionFactory factory) throws Exception{
+			MapperFactoryBean<TopMenuMapper> factoryBean = new MapperFactoryBean<TopMenuMapper>(TopMenuMapper.class);
+			factoryBean.setSqlSessionFactory(factory);
+			return factoryBean;
+		}
 	
-	//interceptor
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		// TODO Auto-generated method stub
-		WebMvcConfigurer.super.addInterceptors(registry);
-		
-		TopMenuInterceptor topMenuInterceptor = new TopMenuInterceptor(TopMenuService);
-		
-		InterceptorRegistration reg1 = registry.addInterceptor(topMenuInterceptor);
-		reg1.addPathPatterns("/**");
-	}
+		//interceptor
+		@Override
+		public void addInterceptors(InterceptorRegistry registry) {
+			// TODO Auto-generated method stub
+			WebMvcConfigurer.super.addInterceptors(registry);
+			
+			TopMenuInterceptor topMenuInterceptor = new TopMenuInterceptor(topMenuService);
+			
+			InterceptorRegistration reg1 = registry.addInterceptor(topMenuInterceptor);
+			reg1.addPathPatterns("/**");
+		}
 	
 	
 }

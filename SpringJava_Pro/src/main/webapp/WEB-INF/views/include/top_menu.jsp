@@ -14,9 +14,10 @@
 		<ul class="navbar-nav">
 			<c:forEach var='obj' items="${topMenuList }">
 				<li class="nav-item">
-					<a href="${root}board/main?board_info_idx=$(obj.board_info_idx}" class="nav-link">${obj.board_info_name }</a>
+					<a href="${root}board/main?board_info_idx=${obj.board_info_idx}" class="nav-link">${obj.board_info_name }</a>
 				</li>
 			</c:forEach>
+			
 		</ul>
 		
 		<ul class="navbar-nav ml-auto">
