@@ -14,7 +14,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-</head>
 <script>
    function checkUserIdExist() {
       /* 변수선언 : 사용자가 입력한 아이디값 가져오기 */
@@ -46,6 +45,7 @@
    }
    
 </script>
+</head>
 
 <body>
 
@@ -59,7 +59,7 @@
       <div class="col-sm-6">
          <div class="card shadow">
             <div class="card-body">
-               <form:form action="${root }/user/join_pro" method="post" modelAttribute="joinUserBean">
+               <form:form action="${root}/user/join_pro" method="post" modelAttribute="joinUserBean">
                   <form:hidden path="userIdExist"/>
                   <div class="form-group">
                      <form:label path="user_name">이름</form:label>

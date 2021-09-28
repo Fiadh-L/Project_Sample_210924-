@@ -2,6 +2,7 @@ package kr.co.softsoldesk.controller;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -12,11 +13,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.co.softsoldesk.beans.UserBean;
+import kr.co.softsoldesk.service.UserService;
 import kr.co.softsoldesk.validator.UserValidator;
 
 @Controller
 @RequestMapping("/user")
 public class UserController {
+	
+	@Autowired
+	private UserService userSerice;
 
 	@GetMapping("/login")
 	public String login() {
@@ -37,6 +42,7 @@ public class UserController {
 			return "user/join";
 		}
 		
+		userSerice.addUserInto(joinUserBean);
 		return "user/join_success";
 		
 	}
