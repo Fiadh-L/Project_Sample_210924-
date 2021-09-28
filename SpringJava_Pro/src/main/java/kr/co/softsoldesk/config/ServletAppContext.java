@@ -19,7 +19,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import kr.co.softsoldesk.intercepter.TopMenuIntercepter;
+import kr.co.softsoldesk.interceptor.TopMenuInterceptor;
 import kr.co.softsoldesk.mapper.BoardInfoMapper;
 import kr.co.softsoldesk.mapper.TopMenuMapper;
 import kr.co.softsoldesk.service.TopMenuService;
@@ -105,7 +105,7 @@ public class ServletAppContext implements WebMvcConfigurer{
 			// TODO Auto-generated method stub
 			WebMvcConfigurer.super.addInterceptors(registry);
 			
-			TopMenuIntercepter topMenuInterceptor = new TopMenuIntercepter(topMenuService);
+			TopMenuInterceptor topMenuInterceptor = new TopMenuInterceptor(topMenuService);
 			
 			InterceptorRegistration reg1 = registry.addInterceptor(topMenuInterceptor);
 			reg1.addPathPatterns("/**");
