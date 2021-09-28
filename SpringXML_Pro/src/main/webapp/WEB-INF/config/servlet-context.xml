@@ -14,6 +14,8 @@
 	 
 	 <!-- 스캔할 bean들이 모여있는 패키지를 등록 -->
 	 <context:component-scan base-package="kr.co.softsoldesk.controller"/>
+	 <context:component-scan base-package="kr.co.softsoldesk.dao"/>
+	 <context:component-scan base-package="kr.co.softsoldesk.service"/>
 	 
 	 <!-- controller의 메서드에서 반환하는 분자열 앞 뒤에 붙일 경로 설정 -->
 	 <beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -50,5 +52,13 @@
 	<beans:bean class='org.mybatis.spring.SqlSessionTemplate' id='sqlSessionTemplate'>
 		<beans:constructor-arg index='0' ref='sqlSession'/>
 	</beans:bean>
+	
+	<!-- 인터셉터 등록 -->
+	<interceptors>
+		<interceptor>
+			<mapping path="/**"/>
+			<beans:bean class='kr.co.softsoldesk.interceptor.TopMenuInterceptor'/>
+		</interceptor>
+	</interceptors>
 	
 </beans:beans>
