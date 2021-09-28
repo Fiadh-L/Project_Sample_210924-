@@ -7,11 +7,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class HomeController {
 
-	@RequestMapping(value="/", method=RequestMethod.GET)
-	public String Home() {
-		
-		//context클래스에 configureViewResolvers에 jsp는 다 읽으라고 등록해둬서 확장자명(.jsp)는 생략해야함
-		return "redirect:/main";
+	@RequestMapping(value="/", method = RequestMethod.GET)
+	public String home() {
+		return "redirect:/main"; 
+		// ServletAppContext.java에서 설정해주었기에 index만사용된다  index.jsp를쓰면 index.jsp.jsp가된다
 	}
-	
+
 }

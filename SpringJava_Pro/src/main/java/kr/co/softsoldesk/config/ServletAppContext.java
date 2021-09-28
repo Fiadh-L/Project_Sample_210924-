@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -17,12 +19,11 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import kr.co.softsoldesk.interceptor.TopMenuInterceptor;
+import kr.co.softsoldesk.intercepter.TopMenuIntercepter;
 import kr.co.softsoldesk.mapper.BoardInfoMapper;
 import kr.co.softsoldesk.mapper.TopMenuMapper;
 import kr.co.softsoldesk.service.TopMenuService;
-
-
+//프로젝트 전반적인설정
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "kr.co.softsoldesk.controller")
@@ -34,31 +35,33 @@ public class ServletAppContext implements WebMvcConfigurer{
 	
 	@Value("${db.classname}")
 	private String db_classname;
+
 	@Value("${db.url}")
 	private String db_url;
+		
 	@Value("${db.username}")
 	private String db_username;
+		
 	@Value("${db.password}")
 	private String db_password;
 	
 	@Autowired
 	private TopMenuService topMenuService;
 	
-	//controller의 메서드가 반환하는 결과값을 view로 보낼대 지정되어지는 경로 구현
+	//controller의 메서드가 반환하는 결과값을 view로 보낼때 지정되어지는 경로 구현
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
 		// TODO Auto-generated method stub
-		WebMvcConfigurer.super.configureViewResolvers(registry);
-		registry.jsp("/WEB-INF/views/",".jsp");
-		
+		WebMvcConfigurer.super.configureViewResolvers(registry); 
+		registry.jsp("/WEB-INF/views/" , ".jsp"); //폴더 , 파일명
 	}
-	//정적 파일의 졍로 지정
+	
+	//정적 파일(데이터)의 경로 지정
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		// TODO Auto-generated method stub
 		WebMvcConfigurer.super.addResourceHandlers(registry);
-		registry.addResourceHandler("/**").addResourceLocations("/resources/");
-		//어디에 있던지 리소스만 있으면 됩니다.
+		registry.addResourceHandler("/**").addResourceLocations("/resources/"); //**어디에 있든지
 	}
 	
 	// 데이터베이스 접속 정보를 관리하는 Bean
@@ -72,8 +75,7 @@ public class ServletAppContext implements WebMvcConfigurer{
 			
 			return source;
 		}
-		
-		
+	
 		// 쿼리문과 접속 정보를 관리하는 객체
 		@Bean
 		public SqlSessionFactory factory(BasicDataSource source) throws Exception{
@@ -98,17 +100,30 @@ public class ServletAppContext implements WebMvcConfigurer{
 			return factoryBean;
 		}
 	
-		//interceptor
 		@Override
 		public void addInterceptors(InterceptorRegistry registry) {
 			// TODO Auto-generated method stub
 			WebMvcConfigurer.super.addInterceptors(registry);
 			
-			TopMenuInterceptor topMenuInterceptor = new TopMenuInterceptor(topMenuService);
+			TopMenuIntercepter topMenuInterceptor = new TopMenuIntercepter(topMenuService);
 			
 			InterceptorRegistration reg1 = registry.addInterceptor(topMenuInterceptor);
 			reg1.addPathPatterns("/**");
 		}
-	
-	
+		
+		//같은 프로퍼티가 올라왔을때 따로 관리해줌
+		//error message 선언과 충돌되므로 별도로 관리해야 한다.
+		@Bean
+		public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+			
+			return new PropertySourcesPlaceholderConfigurer();
+		}
+		
+		@Bean
+		public ReloadableResourceBundleMessageSource messageSource() {
+			ReloadableResourceBundleMessageSource res = new ReloadableResourceBundleMessageSource();
+			res.setBasename("WEB-INF/properties/error_message");
+			
+			return res;
+		}
 }
