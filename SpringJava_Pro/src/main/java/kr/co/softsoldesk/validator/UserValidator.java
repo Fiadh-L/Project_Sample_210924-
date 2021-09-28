@@ -1,7 +1,5 @@
 package kr.co.softsoldesk.validator;
 
-import java.util.Set;
-
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -27,6 +25,9 @@ public class UserValidator implements Validator{
 			errors.rejectValue("user_pw", "NotEquals");
 			errors.rejectValue("user_pw2", "NotEquals");
 		}
+	if(userBean.isUserIdExist() == false) {
+		errors.rejectValue("user_id", "DontCheckUserIdExist");
+	}
 	}
 
 }

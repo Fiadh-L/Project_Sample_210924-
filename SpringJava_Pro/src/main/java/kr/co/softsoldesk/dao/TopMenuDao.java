@@ -10,13 +10,14 @@ import kr.co.softsoldesk.mapper.TopMenuMapper;
 
 @Repository
 public class TopMenuDao {
-	
+
 	@Autowired
 	private TopMenuMapper topMenuMapper;
 	
-	public List<BoardInfoBean> getTopMenuList() {
-		List<BoardInfoBean> topMenuList = topMenuMapper.getTopMenuList();
+	public List<BoardInfoBean> getTopMenuList(){
 		
-		return topMenuList;
+		List<BoardInfoBean> topMenulist=topMenuMapper.getTopMenuList();
+		
+		return topMenulist;
 	}
 }
