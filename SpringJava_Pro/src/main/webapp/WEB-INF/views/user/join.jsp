@@ -16,6 +16,30 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
 </head>
+<script>
+	function checkUserIdExist() {
+		/* 변수선언 : 사용자가 입력한 아이디값 가져오기 */
+		var user_id = $("#user_id").val()
+		if(user_id.length == 0) {
+			alert('아이디를 입력하세요')
+			return
+		}
+	
+	$.ajax({
+		url:'${root}user/checkUserIdExist{user_id}'+(user_id), /* 요청할 페이지 주소 */
+		type: 'get', /* 요청메서드 */
+		dataType: 'text', /* 문자열 */
+		success : function(result){
+			id(result.trim() == 'true'){
+				alert('사용가능한 아이디 입니다')
+			} else {
+				alert('이미 사용중인 아이디 입니다')
+				
+			}
+		}
+	})
+	}
+</script>
 <body>
 
 <!-- 상단 메뉴 부분 -->
@@ -39,7 +63,7 @@
 							<div class="input-group">
 								<form:input type="text" path="user_id" class="form-control"/>
 								<div class="input-group-append">
-									<button type="button" class="btn btn-primary">중복확인</button>
+									<button type="button" onclick="checkUserIdExist()" class="btn btn-primary">중복확인</button>
 								</div>
 								<form:errors path="user_id" style='color:red'/>
 							</div>
