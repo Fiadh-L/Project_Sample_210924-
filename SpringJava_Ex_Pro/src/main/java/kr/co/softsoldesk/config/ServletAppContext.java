@@ -1,5 +1,7 @@
 package kr.co.softsoldesk.config;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import kr.co.softsoldesk.beans.UserBean;
 import kr.co.softsoldesk.interceptor.TopMenuInterceptor;
 import kr.co.softsoldesk.mapper.BoardInfoMapper;
 import kr.co.softsoldesk.mapper.TopMenuMapper;
@@ -27,7 +30,7 @@ import kr.co.softsoldesk.service.TopMenuService;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan("kr.co.softsoldesk.controller")
+@ComponentScan(basePackages = "kr.co.softsoldesk.controller")
 @ComponentScan("kr.co.softsoldesk.dao")
 @ComponentScan("kr.co.softsoldesk.service")
 @PropertySource("/WEB-INF/properties/db.properties")
@@ -44,6 +47,9 @@ public class ServletAppContext implements WebMvcConfigurer {
 	
 	@Autowired
 	public TopMenuService topMenuService;
+	
+	@Resource(name="loginUserBean")
+	private UserBean loginUserBean;
 	
 	// controller의 메서드가 반환하는 결과값을 view로 보낼떄 지정되어지는 경로 구현
 	@Override
@@ -66,7 +72,7 @@ public class ServletAppContext implements WebMvcConfigurer {
 	// TODO Auto-generated method stub
 	   WebMvcConfigurer.super.addInterceptors(registry);
 	         
-	   TopMenuInterceptor topMenuInterceptor = new TopMenuInterceptor(topMenuService);
+	   TopMenuInterceptor topMenuInterceptor = new TopMenuInterceptor(topMenuService, loginUserBean);
 	         
 	   InterceptorRegistration reg1 = registry.addInterceptor(topMenuInterceptor);
 	   reg1.addPathPatterns("/**");// 모든 요청주소에 대하여
@@ -123,12 +129,11 @@ public class ServletAppContext implements WebMvcConfigurer {
 	   return new PropertySourcesPlaceholderConfigurer();
 	}
 
-
 	@Bean
 	public ReloadableResourceBundleMessageSource messageSource() {
 	   ReloadableResourceBundleMessageSource res= new ReloadableResourceBundleMessageSource();
 	         
-	   res.setBasename("/WEB-INF/properties/error_message");
+	   res.setBasename("WEB-INF/properties/error_message");
 	   return res;
 	}
 

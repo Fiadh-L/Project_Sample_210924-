@@ -5,12 +5,14 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import kr.co.softsoldesk.beans.UserBean;
 import kr.co.softsoldesk.service.UserService;
@@ -27,18 +29,20 @@ public class UserController {
 	private UserBean loginUserBean;
 	
 	@GetMapping("/login")
-	public String login(@ModelAttribute("tempLoginUserBean") UserBean temploginUserBean) {
+	public String login(@ModelAttribute("tempLoginUserBean") UserBean tempLoginUserBean,
+			@RequestParam(value = "fail", defaultValue = "false") boolean fail, Model model) {
+		model.addAttribute("fail", fail);
 		return "user/login";
 	}
 	
 	@PostMapping("/login_pro")
-	public String login_pro(@Valid @ModelAttribute ("tempLoginUserBean") UserBean temploginUserBean, BindingResult result) {
+	public String login_pro(@Valid @ModelAttribute("tempLoginUserBean") UserBean tempLoginUserBean, BindingResult result) {
 	      
 	   if(result.hasErrors()) {
 		   return "user/login";
 	   }
 	   
-	   userService.getLoginUserInfo(temploginUserBean);
+	   userService.getLoginUserInfo(tempLoginUserBean);
 	      
 	   if(loginUserBean.isUserLogin() == true) {
 	      return "user/login_success";
@@ -48,12 +52,12 @@ public class UserController {
 	}
 
 	@GetMapping("/join")
-	public String join(@ModelAttribute ("joinUserBean") UserBean joinUserBean) {
+	public String join(@ModelAttribute("joinUserBean") UserBean joinUserBean) {
 		return "user/join";
 	}
 	
 	@PostMapping("/join_pro")
-	public String join_pro(@Valid @ModelAttribute ("joinUserBean") UserBean joinUserBean, BindingResult result) {
+	public String join_pro(@Valid @ModelAttribute("joinUserBean") UserBean joinUserBean, BindingResult result) {
 		if(result.hasErrors()) {
 			return "user/join";
 		}
@@ -68,6 +72,7 @@ public class UserController {
 	
 	@GetMapping("/logout")
 	public String logout() {
+		loginUserBean.setUserLogin(false);
 		return "user/logout";
 	}
 	
